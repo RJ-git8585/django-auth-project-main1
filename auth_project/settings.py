@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +28,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 SECRET_KEY = 'django-insecure-4j-q2^gpu9&%imydt@@vq*h0i#9#(yv0)&q5ewvaftj(eocs2='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG','True')=="True"
 
 ALLOWED_HOSTS = []
 
@@ -102,21 +103,25 @@ ALLOWED_HOSTS = ['*']
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'gdb',
-        'USER': 'gdb_w526_user',
-        'PASSWORD': 'arpNVzso9Z63rYQVc4Z5tMGtRgpvQdHK',
-        'HOST': 'dpg-cp7i5uu3e1ms73al0qk0-a',
-        'PORT': '5432',
-        'OPTIONS': {
-            'connect_timeout': 10,
-        },
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'gdb',
+#         'USER': 'gdb_w526_user',
+#         'PASSWORD': 'arpNVzso9Z63rYQVc4Z5tMGtRgpvQdHK',
+#         'HOST': 'dpg-cp7i5uu3e1ms73al0qk0-a',
+#         'PORT': '5432',
+#         'OPTIONS': {
+#             'connect_timeout': 10,
+#         },
 
+#     }
+# }
+
+if not DEBUG:
+    DATABASES ={
+    "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
     }
-}
-
 
 
 
