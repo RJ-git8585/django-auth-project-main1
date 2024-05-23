@@ -104,20 +104,16 @@ ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'garnishmentdb',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS' :{
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset': 'utf8mb4',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'gdb',
+        'USER': 'gdb_w526_user',
+        'PASSWORD': 'arpNVzso9Z63rYQVc4Z5tMGtRgpvQdHK',
+        'HOST': 'dpg-cp7i5uu3e1ms73al0qk0-a',
+        'PORT': '5432',
+        'OPTIONS': {
             'connect_timeout': 10,
-            'read_timeout': 10,
-            'write_timeout': 10,
-            'autocommit': True,
         },
+
     }
 }
 
