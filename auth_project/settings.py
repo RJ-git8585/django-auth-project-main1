@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'auth_project.wsgi.app'
 
 
 
-ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
+ALLOWED_HOSTS = ['*']
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
