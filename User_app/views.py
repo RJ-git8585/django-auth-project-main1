@@ -41,7 +41,7 @@ def login(request):
         password = data.get('password')
 
         if not email or not password:
-            return JsonResponse({'success': False, 'message': 'Username and password are required','status_code':status.HTTP_400_BAD_REQUEST})
+            return JsonResponse({'success': False, 'message': 'email and password are required','status_code':status.HTTP_400_BAD_REQUEST})
 
         try:
             user = CustomUser.objects.get(email=email)
