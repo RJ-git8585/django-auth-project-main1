@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser ,Employer_Profile
+from .models import CustomUser ,Employer_Profile,Employee_Details
 
 
 
@@ -17,4 +17,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 class EmployerProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employer_Profile
+        fields = '__all__'
+
+
+
+class GetEmployeeDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee_Details
         fields = '__all__'

@@ -16,7 +16,7 @@ import json
 from rest_framework.generics import DestroyAPIView
 from rest_framework import viewsets
 from rest_framework.generics import RetrieveUpdateAPIView
-from .serializers import UserUpdateSerializer,EmployerProfileSerializer 
+from .serializers import UserUpdateSerializer,EmployerProfileSerializer ,GetEmployeeDetailsSerializer
 from django.views.generic import UpdateView
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
@@ -26,7 +26,8 @@ from django.http import HttpResponse
 from .forms import PDFUploadForm
 from .models import PDFFile
 from django.db import transaction
-
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 
 @csrf_exempt
@@ -169,7 +170,7 @@ def EmployerProfile(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            required_fields = ['employer_name', 'street_name', 'federal_employer_identification_number', 'city', 'state', 'country', 'zipcode', 'email', 'number_of_employer', 'department', 'location']
+            required_fields = ['employer_id','employer_name', 'street_name', 'federal_employer_identification_number', 'city', 'state', 'country', 'zipcode', 'email', 'number_of_employer', 'department', 'location']
             missing_fields = [field for field in required_fields if field not in data or not data[field]]
             if missing_fields:
                 return JsonResponse({'error': f'Required fields are missing: {", ".join(missing_fields)}','status_code':status.HTTP_400_BAD_REQUEST})
@@ -295,6 +296,7 @@ class UserUpdateAPIView(RetrieveUpdateAPIView):
         return JsonResponse(response_data)
     
 
+
 # For Deleting the Employer Profile data
 
 class UserDeleteAPIView(DestroyAPIView):
@@ -331,3 +333,23 @@ def upload_pdf(request):
         form = PDFUploadForm()
 
     return render(request, 'upload_pdf.html', {'form': form})
+
+
+
+#Get Employer Details on the bases of Employer_ID
+
+@api_view(['GET'])
+def get_employee_by_employer_id(request, employer_id):
+    employees=Employee_Details.objects.filter(employer_id=employer_id)
+    if employees.exists():
+        try:
+            serializer = GetEmployeeDetailsSerializer(employees, many=True)
+            response_data = {
+                    'success': True,
+                    'message': 'Data Get successfully',
+                    'Code': status.HTTP_204_NO_CONTENT}
+            return JsonResponse(response_data,serializer.data)
+        except Employee_Details.DoesNotExist:
+            return JsonResponse({'message': 'Data not found', 'status_code':status.HTTP_404_NOT_FOUND})
+    else:
+        return JsonResponse({'message': 'Employer ID not found', 'status':status.HTTP_404_NOT_FOUND})

@@ -17,6 +17,7 @@ urlpatterns = [
     path('employer-profile/<int:profile_id>/',EmployerProfileEditView.as_view()),
     path('delete/<str:username>/', UserDeleteAPIView.as_view(), name='user-delete'),
     path('upload', views.upload_pdf, name='upload_pdf'),
+    path('getemployeedetails/<int:employer_id>/', views.get_employee_by_employer_id, name='employee-by-employer-id'),
 
 
 ]
