@@ -34,7 +34,7 @@ class Profile(models.Model):
 # Employer_Profile details
 
 class Employer_Profile(models.Model):
-    employer_id=models.IntegerField(max_length=20)
+    eemployer_id = models.AutoField(primary_key=True)
     employer_name = models.CharField(max_length=50)
     email = models.EmailField(max_length=30)
     federal_employer_identification_number = models.CharField(max_length=50)
@@ -52,6 +52,7 @@ class Employer_Profile(models.Model):
 
 class Employee_Details(models.Model):
     employer_id=models.IntegerField(max_length=20)
+    employee_id = models.AutoField(primary_key=True)
     employee_name = models.CharField(max_length=50)
     garnishment_fees  = models.FloatField(max_length=50)
     net_pay=  models.FloatField()
