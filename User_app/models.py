@@ -62,6 +62,7 @@ class Employee_Details(models.Model):
     location =models.CharField(max_length=50)
   
 class Tax_details(models.Model):
+    tax_id = models.AutoField(primary_key=True)
     employee_id=models.IntegerField(max_length=20)
     fedral_income_tax =models.FloatField()
     social_and_security =models.FloatField()
