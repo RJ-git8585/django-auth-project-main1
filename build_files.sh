@@ -1,6 +1,10 @@
-pip install -r requirements.txt 
-Python 3.12.3 manage.py collectstatic
+#!/bin/bash
 
-$PIP_PATH install -r requirements.txt
-$PYTHON_PATH manage.py migrate
-$PYTHON_PATH manage.py collectstatic --noinput
+# Install dependencies
+pip install -r requirements.txt
+
+# Collect static files
+python manage.py collectstatic --noinput
+
+# Apply database migrations
+python manage.py migrate

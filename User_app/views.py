@@ -11,13 +11,11 @@ from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import logout
 from django.shortcuts import get_object_or_404
-from .models import Employer_Profile
 import json
 from rest_framework.generics import DestroyAPIView
 from rest_framework import viewsets
 from rest_framework.generics import RetrieveUpdateAPIView
 from .serializers import UserUpdateSerializer,EmployerProfileSerializer ,GetEmployeeDetailsSerializer
-from django.views.generic import UpdateView
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import get_user_model
@@ -26,7 +24,6 @@ from django.http import HttpResponse
 from .forms import PDFUploadForm
 from .models import PDFFile
 from django.db import transaction
-from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 
