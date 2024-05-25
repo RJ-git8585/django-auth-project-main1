@@ -122,7 +122,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-os.environ['DATABASE_URL'] = 'postgres://gdb_w526_user:arpNVzso9Z63rYQVc4Z5tMGtRgpvQdHK@dpg-cp7i5uu3e1ms73al0qk0-a.oregon-postgres.render.com/gdb_w526'
+os.environ['DATABASE_URL'] = 'postgres://gdb_r6dr_user:bFQ9hlswG8iPI1rsi7V8whDhtbsAkVZq@dpg-cp8t5dlds78s73c985og-a.singapore-postgres.render.com/gdb_r6dr'
 
 DATABASES = {
     'default': dj_database_url.config(
