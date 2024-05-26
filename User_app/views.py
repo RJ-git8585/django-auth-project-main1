@@ -345,7 +345,10 @@ def get_employee_by_employer_id(request, employer_id):
                     'success': True,
                     'message': 'Data Get successfully',
                     'Code': status.HTTP_204_NO_CONTENT}
-            return JsonResponse(response_data,serializer.data)
+            response_data['data'] = serializer.data
+            return JsonResponse(response_data)
+
+
         except Employee_Details.DoesNotExist:
             return JsonResponse({'message': 'Data not found', 'status_code':status.HTTP_404_NOT_FOUND})
     else:
