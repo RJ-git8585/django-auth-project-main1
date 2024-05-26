@@ -43,7 +43,7 @@ class Employer_Profile(models.Model):
     state = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
     zipcode = models.IntegerField()
-    number_of_employer = models.IntegerField()
+    number_of_employees = models.IntegerField()
     department = models.CharField(max_length=50)
     location = models.CharField(max_length=50)
 
@@ -76,4 +76,10 @@ class PDFFile(models.Model):
 
     def __str__(self):
         return self.name
+
+class IWO_Details_PDF(models.Model):
+    IWO_ID = models.AutoField(primary_key=True)
+    employer_id=models.IntegerField()
+    employee_id=models.IntegerField()
+    IWO_Status =models.CharField(max_length=50)
 

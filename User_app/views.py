@@ -3,13 +3,14 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import CustomUser,Profile , Employer_Profile,Employee_Details,Tax_details
+from .models import CustomUser,Employer_Profile,Employee_Details,Tax_details,IWO_Details_PDF
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login as auth_login 
 from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import logout
+from django.db.models import Count
 from django.shortcuts import get_object_or_404
 import json
 from rest_framework.generics import DestroyAPIView
@@ -306,7 +307,7 @@ class UserDeleteAPIView(DestroyAPIView):
         response_data = {
                 'success': True,
                 'message': 'Data Deleted successfully',
-                'Code': status.HTTP_204_NO_CONTENT}
+                'Code': status.HTTP_200_OK}
         return JsonResponse(response_data)
     
 
@@ -344,7 +345,7 @@ def get_employee_by_employer_id(request, employer_id):
             response_data = {
                     'success': True,
                     'message': 'Data Get successfully',
-                    'Code': status.HTTP_204_NO_CONTENT}
+                    'Code': status.HTTP_200_OK}
             response_data['data'] = serializer.data
             return JsonResponse(response_data)
 
@@ -367,7 +368,7 @@ def get_employer_details(request, employer_id):
             response_data = {
                     'success': True,
                     'message': 'Data Get successfully',
-                    'Code': status.HTTP_204_NO_CONTENT}
+                    'Code': status.HTTP_200_OK}
             response_data['data'] = serializer.data
             return JsonResponse(response_data)
 
@@ -375,4 +376,63 @@ def get_employer_details(request, employer_id):
         except Employer_Profile.DoesNotExist:
             return JsonResponse({'message': 'Data not found', 'status_code':status.HTTP_404_NOT_FOUND})
     else:
-        return JsonResponse({'message': 'Employer ID not found', 'status':status.HTTP_404_NOT_FOUND})
+        return JsonResponse({'message': 'Employer ID not found', 'status_code':status.HTTP_404_NOT_FOUND})
+    
+
+
+
+
+@csrf_exempt
+def insert_iwo_detail(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            employer_id = data.get('employer_id')
+            employee_id = data.get('employee_id')
+            IWO_Status = data.get('IWO_Status')
+
+            # Validate required fields
+            if employer_id is None or employee_id is None or IWO_Status is None:
+                return JsonResponse({'error': 'Missing required fields','code':status.HTTP_400_BAD_REQUEST})
+
+            # Create a new IWO_Details_PDF instance and save it to the database
+            iwo_detail = IWO_Details_PDF(
+                employer_id=employer_id,
+                employee_id=employee_id,
+                IWO_Status=IWO_Status
+            )
+            iwo_detail.save()
+
+            return JsonResponse({'message': 'IWO detail inserted successfully', 'code' :status.HTTP_201_CREATED})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON', 'status_code':status.HTTP_400_BAD_REQUEST})
+        except Exception as e:
+            return JsonResponse({'error': str(e),'status_code': status.HTTP_500_INTERNAL_SERVER_ERROR})
+
+    return JsonResponse({'error': 'Invalid request method', 'status_code': status.HTTP_405_METHOD_NOT_ALLOWED})
+
+
+
+
+
+
+@csrf_exempt
+def get_dashboard_data(request):
+    total_iwo = IWO_Details_PDF.objects.count()
+
+    employees_with_single_iwo = IWO_Details_PDF.objects.values('employee_id').annotate(iwo_count=Count('employee_id')).filter(iwo_count=1).count()
+
+    employees_with_multiple_iwo = IWO_Details_PDF.objects.values('employee_id').annotate(iwo_count=Count('employee_id')).filter(iwo_count__gt=1).count()
+
+    active_employees = IWO_Details_PDF.objects.filter(IWO_Status='active').count()
+
+    data = {
+        'Total IWO': total_iwo,
+        'Employees with Single IWO': employees_with_single_iwo,
+        'Employees with Multiple IWO': employees_with_multiple_iwo,
+        'Active_employees': active_employees,
+    }
+
+    return JsonResponse({'data':data,'status_code':status.HTTP_200_OK})
+  

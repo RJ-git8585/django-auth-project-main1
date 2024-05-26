@@ -19,6 +19,9 @@ urlpatterns = [
     path('upload', views.upload_pdf, name='upload_pdf'),
     path('getemployeedetails/<int:employer_id>/', views.get_employee_by_employer_id, name='employee-by-employer-id'),
     path('getemployerdetails/<int:employer_id>/', views.get_employer_details, name='employer-detail-by-employer-id'),
+    path('DashboardData',views.get_dashboard_data, name='iwo_dashboard'),
+    path('IWO_Data',views.insert_iwo_detail, name='iwo_pdf_data'),
+
 
 
 ]

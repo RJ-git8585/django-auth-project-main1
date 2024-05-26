@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser ,Employer_Profile,Employee_Details
+from .models import CustomUser ,Employer_Profile,Employee_Details,IWO_Details_PDF
 
 
 
@@ -31,3 +31,8 @@ class GetEmployerDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employer_Profile
         fields = '__all__'
+
+# class IWODetailsPDFSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = IWO_Details_PDF
+#         fields = '__all__'
