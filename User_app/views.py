@@ -15,7 +15,7 @@ import json
 from rest_framework.generics import DestroyAPIView
 from rest_framework import viewsets
 from rest_framework.generics import RetrieveUpdateAPIView
-from .serializers import UserUpdateSerializer,EmployerProfileSerializer ,GetEmployeeDetailsSerializer
+from .serializers import UserUpdateSerializer,EmployerProfileSerializer ,GetEmployeeDetailsSerializer,GetEmployerDetailsSerializer
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import get_user_model
@@ -240,7 +240,7 @@ def TaxDetails(request):
 class EmployerProfileEditView(RetrieveUpdateAPIView):
     queryset = Employer_Profile.objects.all()
     serializer_class = EmployerProfileSerializer
-    lookup_field = 'profile_id'
+    lookup_field = 'employer_id'
 
     def put(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -350,6 +350,29 @@ def get_employee_by_employer_id(request, employer_id):
 
 
         except Employee_Details.DoesNotExist:
+            return JsonResponse({'message': 'Data not found', 'status_code':status.HTTP_404_NOT_FOUND})
+    else:
+        return JsonResponse({'message': 'Employer ID not found', 'status':status.HTTP_404_NOT_FOUND})
+
+
+
+#Get Employer Details from employer ID
+
+@api_view(['GET'])
+def get_employer_details(request, employer_id):
+    employees=Employer_Profile.objects.filter(employer_id=employer_id)
+    if employees.exists():
+        try:
+            serializer = GetEmployerDetailsSerializer(employees, many=True)
+            response_data = {
+                    'success': True,
+                    'message': 'Data Get successfully',
+                    'Code': status.HTTP_204_NO_CONTENT}
+            response_data['data'] = serializer.data
+            return JsonResponse(response_data)
+
+
+        except Employer_Profile.DoesNotExist:
             return JsonResponse({'message': 'Data not found', 'status_code':status.HTTP_404_NOT_FOUND})
     else:
         return JsonResponse({'message': 'Employer ID not found', 'status':status.HTTP_404_NOT_FOUND})
