@@ -19,6 +19,10 @@ class EmployerProfileSerializer(serializers.ModelSerializer):
         model = Employer_Profile
         fields = '__all__'
 
+class EmployeeDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee_Details
+        fields = '__all__'
 
 
 class GetEmployeeDetailsSerializer(serializers.ModelSerializer):

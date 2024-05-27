@@ -13,6 +13,7 @@ urlpatterns = [
     path('employer-profile/', views.EmployerProfile, name='employer_profile'),
     path('TaxDetails/', views.TaxDetails, name='Tax_details'),
     path('employee_details/', views.EmployeeDetails, name='employee_details'),
+    path('employee_details/<int:employee_id>/', views.EmployeeDetailsUpdateAPIView, name='employee_details'),
     path('<str:username>/', UserUpdateAPIView.as_view()),
     path('employer-profile/<int:profile_id>/',EmployerProfileEditView.as_view()),
     path('delete/<str:username>/', UserDeleteAPIView.as_view(), name='user-delete'),

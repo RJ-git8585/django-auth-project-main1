@@ -16,7 +16,7 @@ import json
 from rest_framework.generics import DestroyAPIView
 from rest_framework import viewsets
 from rest_framework.generics import RetrieveUpdateAPIView
-from .serializers import UserUpdateSerializer,EmployerProfileSerializer ,GetEmployeeDetailsSerializer,GetEmployerDetailsSerializer
+from .serializers import UserUpdateSerializer,EmployerProfileSerializer ,GetEmployeeDetailsSerializer,GetEmployerDetailsSerializer,EmployeeDetailsSerializer
 from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import get_user_model
@@ -248,7 +248,7 @@ class EmployerProfileEditView(RetrieveUpdateAPIView):
         data = request.data
 
         # Check for missing fields
-        required_fields = ['employer_name', 'street_name', 'federal_employer_identification_number', 'city', 'state', 'country', 'zipcode', 'email', 'number_of_employer', 'department', 'location']
+        required_fields = ['employer_name', 'street_name', 'federal_employer_identification_number', 'city', 'state', 'country', 'zipcode', 'email', 'number_of_employees', 'department', 'location']
         missing_fields = [field for field in required_fields if field not in data or not data[field]]
         if missing_fields:
             return JsonResponse({'error': f'Required fields are missing: {", ".join(missing_fields)}', 'status_code':status.HTTP_400_BAD_REQUEST})
@@ -258,7 +258,7 @@ class EmployerProfileEditView(RetrieveUpdateAPIView):
             return JsonResponse({'error': 'Federal Employer Identification Number must be exactly 9 characters long', 'status_code':status.HTTP_400_BAD_REQUEST})
 
         # Validate email if it's being updated
-        if 'email' in data and Employer_Profile.objects.filter(email=data['email']).exclude(profile_id=instance.profile_id).exists():
+        if 'email' in data and Employer_Profile.objects.filter(email=data['email']).exclude(employer_id=instance.employer_id).exists():
             return JsonResponse({'error': 'Email already registered', 'status_code':status.HTTP_400_BAD_REQUEST})
 
         serializer = self.get_serializer(instance, data=data, partial=True)
@@ -293,6 +293,26 @@ class UserUpdateAPIView(RetrieveUpdateAPIView):
                 'Code': status.HTTP_200_OK}
         return JsonResponse(response_data)
     
+
+
+
+#update employee Details
+@api_view(['PUT'])
+class EmployeeDetailsUpdateAPIView(RetrieveUpdateAPIView):
+    queryset = Employee_Details.objects.all()
+    serializer_class = EmployeeDetailsSerializer
+    lookup_field = 'employee_id'  
+    @csrf_exempt
+    def put(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        response_data = {
+                'success': True,
+                'message': 'Data Updated successfully',
+                'Code': status.HTTP_200_OK}
+        return JsonResponse(response_data)
 
 
 # For Deleting the Employer Profile data
