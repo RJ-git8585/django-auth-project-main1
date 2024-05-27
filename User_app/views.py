@@ -242,7 +242,7 @@ class EmployerProfileEditView(RetrieveUpdateAPIView):
     queryset = Employer_Profile.objects.all()
     serializer_class = EmployerProfileSerializer
     lookup_field = 'employer_id'
-
+    @csrf_exempt
     def put(self, request, *args, **kwargs):
         instance = self.get_object()
         data = request.data
@@ -297,12 +297,13 @@ class UserUpdateAPIView(RetrieveUpdateAPIView):
 
 
 #update employee Details
-@api_view(['PUT'])
+from django.utils.decorators import method_decorator
+
+@method_decorator(csrf_exempt, name='dispatch')
 class EmployeeDetailsUpdateAPIView(RetrieveUpdateAPIView):
     queryset = Employee_Details.objects.all()
     serializer_class = EmployeeDetailsSerializer
     lookup_field = 'employee_id'  
-    @csrf_exempt
     def put(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
@@ -316,7 +317,7 @@ class EmployeeDetailsUpdateAPIView(RetrieveUpdateAPIView):
 
 
 # For Deleting the Employer Profile data
-
+@method_decorator(csrf_exempt, name='dispatch')
 class UserDeleteAPIView(DestroyAPIView):
     queryset = CustomUser.objects.all()
     lookup_field = 'username' 
